@@ -13,7 +13,16 @@
 <body>
     <div class="container">
         <header>
-            <h1>🎅 Secret Santa</h1>
+            <div class="header-top">
+                <h1>🎅 Secret Santa</h1>
+                <div class="language-selector-wrapper">
+                    <label for="language-selector">🌐</label>
+                    <select id="language-selector" class="language-selector">
+                        <option value="fr">Français</option>
+                        <option value="en">English</option>
+                    </select>
+                </div>
+            </div>
             <p class="subtitle">Organisez votre échange de cadeaux</p>
         </header>
 
@@ -34,10 +43,10 @@
                     <p class="help-text">Les couples ne pourront pas se tirer entre eux</p>
                     <div class="input-group">
                         <select id="couple-person1" class="couple-select">
-                            <option value="">Personne 1</option>
+                            <option value="">Choose...</option>
                         </select>
                         <select id="couple-person2" class="couple-select">
-                            <option value="">Personne 2</option>
+                            <option value="">Choose...</option>
                         </select>
                         <button id="add-couple" class="btn btn-secondary">Ajouter couple</button>
                     </div>
