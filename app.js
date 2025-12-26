@@ -72,6 +72,7 @@ class SecretSantaApp {
         this.drawResults = [];
         this.currentDrawIndex = 0;
         this.currentLanguage = localStorage.getItem('secretSantaLang') || 'fr';
+        this.SUSPENSE_ANIMATION_DURATION = 2000; // milliseconds
         this.init();
     }
 
@@ -277,11 +278,11 @@ class SecretSantaApp {
         if (this.currentDrawIndex >= this.drawResults.length) {
             this.showResults();
         } else {
-            this.updateDrawDisplay();
+            this.updateDrawDisplay(true);
         }
     }
 
-    updateDrawDisplay() {
+    updateDrawDisplay(withAnimation = false) {
         const drawInfo = document.getElementById('draw-info');
         drawInfo.innerHTML = '';
 
@@ -289,21 +290,56 @@ class SecretSantaApp {
         for (let i = 0; i <= this.currentDrawIndex && i < this.drawResults.length; i++) {
             const draw = this.drawResults[i];
             const stepDiv = document.createElement('div');
-            stepDiv.className = 'draw-step' + (i === this.currentDrawIndex ? ' current' : '');
+            const isCurrent = i === this.currentDrawIndex;
+            stepDiv.className = 'draw-step' + (isCurrent ? ' current' : '');
+            
+            // For the current draw with animation, show suspense first
+            const receiverContent = (isCurrent && withAnimation) 
+                ? '<span class="receiver revealing">???</span>'
+                : `<span class="receiver">${draw.receiver}</span>`;
             
             if (i === 0) {
                 stepDiv.innerHTML = `
                     <div>${this.t('firstDraw')} <span class="giver">${draw.giver}</span></div>
-                    <div>${this.t('givesTo')} <span class="receiver">${draw.receiver}</span></div>
+                    <div>${this.t('givesTo')} ${receiverContent}</div>
                 `;
             } else {
                 stepDiv.innerHTML = `
                     <div>${this.t('next')} <span class="giver">${draw.giver}</span></div>
-                    <div>${this.t('givesTo')} <span class="receiver">${draw.receiver}</span></div>
+                    <div>${this.t('givesTo')} ${receiverContent}</div>
                 `;
             }
             
             drawInfo.appendChild(stepDiv);
+            
+            // If this is the current draw with animation, reveal after delay
+            if (isCurrent && withAnimation) {
+                const receiverSpan = stepDiv.querySelector('.receiver');
+                const drawIndexSnapshot = this.currentDrawIndex;
+                const drawSection = document.getElementById('draw-section');
+                // Disable the button during animation
+                const nextBtn = document.getElementById('next-draw');
+                nextBtn.disabled = true;
+                
+                // After suspense, reveal the name
+                setTimeout(() => {
+                    // Always re-enable the button after timeout
+                    const currentBtn = document.getElementById('next-draw');
+                    if (currentBtn) {
+                        currentBtn.disabled = false;
+                    }
+                    
+                    // Verify the state hasn't changed and the element still exists before revealing
+                    if (receiverSpan && 
+                        receiverSpan.parentNode && 
+                        drawIndexSnapshot === this.currentDrawIndex &&
+                        drawSection && drawSection.style.display !== 'none') {
+                        receiverSpan.classList.remove('revealing');
+                        receiverSpan.classList.add('revealed');
+                        receiverSpan.textContent = draw.receiver;
+                    }
+                }, this.SUSPENSE_ANIMATION_DURATION);
+            }
         }
 
         // Update button text
