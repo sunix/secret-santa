@@ -34,10 +34,52 @@ header {
     margin-bottom: 30px;
 }
 
+.header-top {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
 header h1 {
     font-size: 3rem;
     margin-bottom: 10px;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.language-selector-wrapper {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.language-selector-wrapper label {
+    font-size: 1.5rem;
+}
+
+.language-selector {
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: 2px solid white;
+    background: rgba(255, 255, 255, 0.9);
+    color: var(--text-color);
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.language-selector:hover {
+    background: white;
+}
+
+.language-selector:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
 }
 
 .subtitle {
@@ -289,6 +331,16 @@ footer {
     
     .subtitle {
         font-size: 1rem;
+    }
+
+    .header-top {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .language-selector-wrapper {
+        position: static;
+        transform: none;
     }
     
     .card {

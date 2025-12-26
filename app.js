@@ -1,3 +1,69 @@
+// Translations
+const translations = {
+    fr: {
+        title: "Secret Santa",
+        subtitle: "Organisez votre échange de cadeaux",
+        participants: "Participants",
+        participantPlaceholder: "Nom du participant",
+        addButton: "Ajouter",
+        couples: "Couples",
+        couplesHelp: "Les couples ne pourront pas se tirer entre eux",
+        person1: "Personne 1",
+        person2: "Personne 2",
+        addCouple: "Ajouter couple",
+        startDraw: "Commencer le tirage",
+        drawInProgress: "Tirage en cours",
+        nextDraw: "Tirer le suivant",
+        restart: "Recommencer",
+        drawComplete: "✨ Tirage terminé !",
+        newDraw: "Nouveau tirage",
+        footer: "🎄 Joyeuses fêtes ! 🎁",
+        remove: "Retirer",
+        choose: "Choisir...",
+        firstDraw: "🎲 Premier tirage :",
+        givesTo: "🎁 Offre un cadeau à :",
+        next: "👉",
+        resultsTitle: "Résumé des attributions :",
+        seeResults: "Voir les résultats",
+        minParticipants: "Il faut au moins 2 participants !",
+        invalidDraw: "Impossible de faire un tirage valide avec ces contraintes. Veuillez vérifier les couples.",
+        confirmRestart: "Voulez-vous recommencer le tirage ?",
+        confirmNewDraw: "Voulez-vous faire un nouveau tirage avec les mêmes participants ?",
+        language: "Langue"
+    },
+    en: {
+        title: "Secret Santa",
+        subtitle: "Organize your gift exchange",
+        participants: "Participants",
+        participantPlaceholder: "Participant name",
+        addButton: "Add",
+        couples: "Couples",
+        couplesHelp: "Couples won't be matched with each other",
+        person1: "Person 1",
+        person2: "Person 2",
+        addCouple: "Add couple",
+        startDraw: "Start draw",
+        drawInProgress: "Draw in progress",
+        nextDraw: "Draw next",
+        restart: "Restart",
+        drawComplete: "✨ Draw complete!",
+        newDraw: "New draw",
+        footer: "🎄 Happy Holidays! 🎁",
+        remove: "Remove",
+        choose: "Choose...",
+        firstDraw: "🎲 First draw:",
+        givesTo: "🎁 Gives a gift to:",
+        next: "👉",
+        resultsTitle: "Summary of assignments:",
+        seeResults: "See results",
+        minParticipants: "At least 2 participants are required!",
+        invalidDraw: "Unable to create a valid draw with these constraints. Please check the couples.",
+        confirmRestart: "Do you want to restart the draw?",
+        confirmNewDraw: "Do you want to make a new draw with the same participants?",
+        language: "Language"
+    }
+};
+
 // Secret Santa Application
 class SecretSantaApp {
     constructor() {
@@ -5,16 +71,71 @@ class SecretSantaApp {
         this.couples = [];
         this.drawResults = [];
         this.currentDrawIndex = 0;
+        this.currentLanguage = localStorage.getItem('secretSantaLang') || 'fr';
         this.init();
     }
 
     init() {
         this.setupEventListeners();
+        this.updateLanguage();
         this.updateUI();
         this.registerServiceWorker();
     }
 
+    t(key) {
+        return translations[this.currentLanguage][key] || key;
+    }
+
+    setLanguage(lang) {
+        this.currentLanguage = lang;
+        localStorage.setItem('secretSantaLang', lang);
+        document.documentElement.lang = lang;
+        this.updateLanguage();
+        this.updateUI();
+    }
+
+    updateLanguage() {
+        // Update static text elements
+        document.querySelector('header h1').textContent = `🎅 ${this.t('title')}`;
+        document.querySelector('.subtitle').textContent = this.t('subtitle');
+        document.querySelector('#setup-section h2').textContent = this.t('participants');
+        document.querySelector('#participant-name').placeholder = this.t('participantPlaceholder');
+        document.querySelector('#add-participant').textContent = this.t('addButton');
+        document.querySelector('.couples-section h3').textContent = this.t('couples');
+        document.querySelector('.help-text').textContent = this.t('couplesHelp');
+        document.querySelector('#add-couple').textContent = this.t('addCouple');
+        document.querySelector('#start-draw').textContent = this.t('startDraw');
+        document.querySelector('#draw-section h2').textContent = this.t('drawInProgress');
+        document.querySelector('#next-draw').textContent = this.t('nextDraw');
+        document.querySelector('#restart-draw').textContent = this.t('restart');
+        document.querySelector('#results-section h2').textContent = this.t('drawComplete');
+        document.querySelector('#new-draw').textContent = this.t('newDraw');
+        document.querySelector('footer p').textContent = this.t('footer');
+
+        // Update language selector
+        const langSelector = document.getElementById('language-selector');
+        if (langSelector) {
+            langSelector.value = this.currentLanguage;
+        }
+
+        // Update draw display if in progress
+        if (this.drawResults.length > 0 && document.getElementById('draw-section').style.display !== 'none') {
+            this.updateDrawDisplay();
+        }
+
+        // Update results if shown
+        if (document.getElementById('results-section').style.display !== 'none') {
+            this.showResults();
+        }
+    }
+
     setupEventListeners() {
+        // Language selector
+        const langSelector = document.getElementById('language-selector');
+        if (langSelector) {
+            langSelector.addEventListener('change', (e) => this.setLanguage(e.target.value));
+        }
+
         // Participant management
         document.getElementById('add-participant').addEventListener('click', () => this.addParticipant());
         document.getElementById('participant-name').addEventListener('keypress', (e) => {
@@ -81,7 +202,7 @@ class SecretSantaApp {
 
     startDraw() {
         if (this.participants.length < 2) {
-            alert('Il faut au moins 2 participants !');
+            alert(this.t('minParticipants'));
             return;
         }
 
@@ -91,7 +212,7 @@ class SecretSantaApp {
 
         // Perform the complete draw to ensure it's valid
         if (!this.performCompleteDraw()) {
-            alert('Impossible de faire un tirage valide avec ces contraintes. Veuillez vérifier les couples.');
+            alert(this.t('invalidDraw'));
             return;
         }
 
@@ -172,13 +293,13 @@ class SecretSantaApp {
             
             if (i === 0) {
                 stepDiv.innerHTML = `
-                    <div>🎲 Premier tirage : <span class="giver">${draw.giver}</span></div>
-                    <div>🎁 Offre un cadeau à : <span class="receiver">${draw.receiver}</span></div>
+                    <div>${this.t('firstDraw')} <span class="giver">${draw.giver}</span></div>
+                    <div>${this.t('givesTo')} <span class="receiver">${draw.receiver}</span></div>
                 `;
             } else {
                 stepDiv.innerHTML = `
-                    <div>👉 <span class="giver">${draw.giver}</span></div>
-                    <div>🎁 Offre un cadeau à : <span class="receiver">${draw.receiver}</span></div>
+                    <div>${this.t('next')} <span class="giver">${draw.giver}</span></div>
+                    <div>${this.t('givesTo')} <span class="receiver">${draw.receiver}</span></div>
                 `;
             }
             
@@ -188,9 +309,9 @@ class SecretSantaApp {
         // Update button text
         const nextBtn = document.getElementById('next-draw');
         if (this.currentDrawIndex < this.drawResults.length - 1) {
-            nextBtn.textContent = 'Tirer le suivant';
+            nextBtn.textContent = this.t('nextDraw');
         } else {
-            nextBtn.textContent = 'Voir les résultats';
+            nextBtn.textContent = this.t('seeResults');
         }
     }
 
@@ -199,7 +320,7 @@ class SecretSantaApp {
         document.getElementById('results-section').style.display = 'block';
 
         const resultsList = document.getElementById('results-list');
-        resultsList.innerHTML = '<h3>Résumé des attributions :</h3>';
+        resultsList.innerHTML = `<h3>${this.t('resultsTitle')}</h3>`;
 
         this.drawResults.forEach((draw, index) => {
             const resultDiv = document.createElement('div');
@@ -212,7 +333,7 @@ class SecretSantaApp {
     }
 
     restartDraw() {
-        if (confirm('Voulez-vous recommencer le tirage ?')) {
+        if (confirm(this.t('confirmRestart'))) {
             this.currentDrawIndex = 0;
             this.drawResults = [];
             
@@ -224,7 +345,7 @@ class SecretSantaApp {
     }
 
     newDraw() {
-        if (confirm('Voulez-vous faire un nouveau tirage avec les mêmes participants ?')) {
+        if (confirm(this.t('confirmNewDraw'))) {
             this.startDraw();
         }
     }
@@ -245,7 +366,7 @@ class SecretSantaApp {
             item.className = 'participant-item';
             item.innerHTML = `
                 <span class="participant-name">${name}</span>
-                <button class="remove-btn" title="Retirer">×</button>
+                <button class="remove-btn" title="${this.t('remove')}">×</button>
             `;
             item.querySelector('.remove-btn').addEventListener('click', () => this.removeParticipant(name));
             list.appendChild(item);
@@ -258,7 +379,7 @@ class SecretSantaApp {
 
         [select1, select2].forEach(select => {
             const currentValue = select.value;
-            select.innerHTML = '<option value="">Choisir...</option>';
+            select.innerHTML = `<option value="">${this.t('choose')}</option>`;
             
             this.participants.forEach(name => {
                 const option = document.createElement('option');
@@ -282,7 +403,7 @@ class SecretSantaApp {
             item.className = 'couple-item';
             item.innerHTML = `
                 <span class="couple-text">💑 ${couple[0]} ↔️ ${couple[1]}</span>
-                <button class="remove-btn" title="Retirer">×</button>
+                <button class="remove-btn" title="${this.t('remove')}">×</button>
             `;
             item.querySelector('.remove-btn').addEventListener('click', () => this.removeCouple(index));
             list.appendChild(item);
