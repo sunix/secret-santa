@@ -283,6 +283,35 @@ input[type="text"]:focus,
     }
 }
 
+@keyframes suspense {
+    0%, 100% {
+        transform: scale(1);
+    }
+    25% {
+        transform: scale(1.1);
+    }
+    50% {
+        transform: scale(0.9);
+    }
+    75% {
+        transform: scale(1.05);
+    }
+}
+
+@keyframes reveal {
+    0% {
+        opacity: 0;
+        transform: scale(0.5);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
 .giver {
     font-weight: bold;
     color: var(--primary-color);
@@ -293,6 +322,18 @@ input[type="text"]:focus,
     font-weight: bold;
     color: var(--secondary-color);
     font-size: 1.2rem;
+}
+
+.receiver.revealing {
+    display: inline-block;
+    animation: suspense 0.5s ease-in-out infinite;
+    color: var(--primary-color);
+    font-size: 1.5rem;
+}
+
+.receiver.revealed {
+    display: inline-block;
+    animation: reveal 0.6s ease-out;
 }
 
 .draw-actions {
