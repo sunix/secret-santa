@@ -122,7 +122,6 @@ class SecretSantaApp {
 
     tryDraw() {
         const result = [];
-        const available = [...this.participants];
         
         // Shuffle to get random starting person
         const shuffled = this.shuffle([...this.participants]);
