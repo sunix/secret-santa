@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#c41e3a">
+    <meta name="description" content="Application Secret Santa - Organisez votre échange de cadeaux">
+    <title>Secret Santa</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/png" href="icon-192.png">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎅 Secret Santa</h1>
+            <p class="subtitle">Organisez votre échange de cadeaux</p>
+        </header>
+
+        <main>
+            <!-- Section: Participant Management -->
+            <section id="setup-section" class="card">
+                <h2>Participants</h2>
+                <div class="input-group">
+                    <input type="text" id="participant-name" placeholder="Nom du participant" />
+                    <button id="add-participant" class="btn btn-primary">Ajouter</button>
+                </div>
+                
+                <div id="participants-list" class="participants-list"></div>
+
+                <!-- Couples Management -->
+                <div class="couples-section">
+                    <h3>Couples</h3>
+                    <p class="help-text">Les couples ne pourront pas se tirer entre eux</p>
+                    <div class="input-group">
+                        <select id="couple-person1" class="couple-select">
+                            <option value="">Personne 1</option>
+                        </select>
+                        <select id="couple-person2" class="couple-select">
+                            <option value="">Personne 2</option>
+                        </select>
+                        <button id="add-couple" class="btn btn-secondary">Ajouter couple</button>
+                    </div>
+                    <div id="couples-list" class="couples-list"></div>
+                </div>
+
+                <button id="start-draw" class="btn btn-primary btn-large" disabled>Commencer le tirage</button>
+            </section>
+
+            <!-- Section: Drawing Process -->
+            <section id="draw-section" class="card" style="display: none;">
+                <h2>Tirage en cours</h2>
+                <div id="draw-info" class="draw-info"></div>
+                <div class="draw-actions">
+                    <button id="next-draw" class="btn btn-primary btn-large">Tirer le suivant</button>
+                    <button id="restart-draw" class="btn btn-secondary">Recommencer</button>
+                </div>
+            </section>
+
+            <!-- Section: Results -->
+            <section id="results-section" class="card" style="display: none;">
+                <h2>✨ Tirage terminé !</h2>
+                <div id="results-list" class="results-list"></div>
+                <div class="draw-actions">
+                    <button id="new-draw" class="btn btn-primary">Nouveau tirage</button>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>🎄 Joyeuses fêtes ! 🎁</p>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
