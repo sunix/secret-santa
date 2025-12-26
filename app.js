@@ -316,21 +316,27 @@ class SecretSantaApp {
             if (isCurrent && withAnimation) {
                 const receiverSpan = stepDiv.querySelector('.receiver');
                 const drawIndexSnapshot = this.currentDrawIndex;
+                const drawSection = document.getElementById('draw-section');
                 // Disable the button during animation
                 const nextBtn = document.getElementById('next-draw');
                 nextBtn.disabled = true;
                 
                 // After suspense, reveal the name
                 setTimeout(() => {
-                    // Verify the state hasn't changed and the element still exists
+                    // Always re-enable the button after timeout
+                    const currentBtn = document.getElementById('next-draw');
+                    if (currentBtn) {
+                        currentBtn.disabled = false;
+                    }
+                    
+                    // Verify the state hasn't changed and the element still exists before revealing
                     if (receiverSpan && 
                         receiverSpan.parentNode && 
                         drawIndexSnapshot === this.currentDrawIndex &&
-                        document.getElementById('draw-section').style.display !== 'none') {
+                        drawSection && drawSection.style.display !== 'none') {
                         receiverSpan.classList.remove('revealing');
                         receiverSpan.classList.add('revealed');
                         receiverSpan.textContent = draw.receiver;
-                        nextBtn.disabled = false;
                     }
                 }, this.SUSPENSE_ANIMATION_DURATION);
             }
