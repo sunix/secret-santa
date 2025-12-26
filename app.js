@@ -72,6 +72,7 @@ class SecretSantaApp {
         this.drawResults = [];
         this.currentDrawIndex = 0;
         this.currentLanguage = localStorage.getItem('secretSantaLang') || 'fr';
+        this.SUSPENSE_ANIMATION_DURATION = 2000; // milliseconds
         this.init();
     }
 
@@ -314,17 +315,24 @@ class SecretSantaApp {
             // If this is the current draw with animation, reveal after delay
             if (isCurrent && withAnimation) {
                 const receiverSpan = stepDiv.querySelector('.receiver');
+                const drawIndexSnapshot = this.currentDrawIndex;
                 // Disable the button during animation
                 const nextBtn = document.getElementById('next-draw');
                 nextBtn.disabled = true;
                 
                 // After suspense, reveal the name
                 setTimeout(() => {
-                    receiverSpan.classList.remove('revealing');
-                    receiverSpan.classList.add('revealed');
-                    receiverSpan.textContent = draw.receiver;
-                    nextBtn.disabled = false;
-                }, 2000); // 2 seconds of suspense
+                    // Verify the state hasn't changed and the element still exists
+                    if (receiverSpan && 
+                        receiverSpan.parentNode && 
+                        drawIndexSnapshot === this.currentDrawIndex &&
+                        document.getElementById('draw-section').style.display !== 'none') {
+                        receiverSpan.classList.remove('revealing');
+                        receiverSpan.classList.add('revealed');
+                        receiverSpan.textContent = draw.receiver;
+                        nextBtn.disabled = false;
+                    }
+                }, this.SUSPENSE_ANIMATION_DURATION);
             }
         }
 
