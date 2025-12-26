@@ -2,6 +2,8 @@
 
 Une application web progressive (PWA) pour organiser un Secret Santa avec vos amis !
 
+🎄 **[Accéder à l'application](https://sunix.github.io/secret-santa)** 🎄
+
 ## Fonctionnalités
 
 - 🎲 **Ajout de participants** : Saisissez facilement les noms de tous les participants
@@ -13,22 +15,36 @@ Une application web progressive (PWA) pour organiser un Secret Santa avec vos am
 
 ## Utilisation
 
-1. Ouvrez `index.html` dans votre navigateur
-2. Ajoutez les participants un par un
-3. (Optionnel) Ajoutez des couples qui ne doivent pas se tirer entre eux
-4. Cliquez sur "Commencer le tirage"
-5. Révélez progressivement qui offre à qui en cliquant sur "Tirer le suivant"
-6. Consultez le résumé final de tous les échanges
+### En ligne
 
-## Installation locale
+Visitez simplement [https://sunix.github.io/secret-santa](https://sunix.github.io/secret-santa)
 
-Servez simplement les fichiers via un serveur HTTP local :
+### Installation locale
+
+Pour tester localement, servez les fichiers via un serveur HTTP :
 
 ```bash
 python3 -m http.server 8000
 ```
 
 Puis ouvrez http://localhost:8000 dans votre navigateur.
+
+### Guide d'utilisation
+
+1. Ajoutez les participants un par un
+2. (Optionnel) Ajoutez des couples qui ne doivent pas se tirer entre eux
+3. Cliquez sur "Commencer le tirage"
+4. Révélez progressivement qui offre à qui en cliquant sur "Tirer le suivant"
+5. Consultez le résumé final de tous les échanges
+
+## Hébergement GitHub Pages
+
+L'application est hébergée sur GitHub Pages et accessible à l'adresse :
+**https://sunix.github.io/secret-santa**
+
+Pour déployer les modifications :
+1. Les commits sur la branche principale sont automatiquement déployés
+2. Ou configurez GitHub Pages dans les paramètres du repository pour utiliser la branche de votre choix
 
 ## Structure du projet
 
