@@ -2,7 +2,8 @@
     "name": "Secret Santa",
     "short_name": "Secret Santa",
     "description": "Application pour organiser un Secret Santa avec vos amis",
-    "start_url": "./",
+    "start_url": "/secret-santa/",
+    "scope": "/secret-santa/",
     "display": "standalone",
     "background_color": "#c41e3a",
     "theme_color": "#c41e3a",
@@ -18,7 +19,7 @@
             "src": "icon-512.png",
             "sizes": "512x512",
             "type": "image/png",
-            "purpose": "any"
+            "purpose": "any maskable"
         }
     ]
 }
