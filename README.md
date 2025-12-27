@@ -62,4 +62,48 @@ Pour déployer les modifications :
 - JavaScript Vanilla (ES6+)
 - PWA (Progressive Web App)
 
+## Publication sur Google Play Store 📱
+
+L'application peut être publiée sur le Google Play Store en tant qu'application Android native grâce à la technologie Trusted Web Activity (TWA).
+
+### Guide complet
+
+Consultez le **[Guide de publication Google Play Store](GOOGLE_PLAY_GUIDE.md)** pour les instructions détaillées.
+
+### Résumé rapide
+
+1. **Installer les dépendances**:
+   ```bash
+   npm install
+   ```
+
+2. **Créer un keystore Android** (première fois seulement):
+   ```bash
+   keytool -genkey -v -keystore android.keystore -alias android -keyalg RSA -keysize 2048 -validity 10000
+   ```
+
+3. **Configurer Digital Asset Links**:
+   - Obtenir l'empreinte SHA-256 de votre keystore
+   - Mettre à jour `.well-known/assetlinks.json`
+   - Déployer sur GitHub Pages
+
+4. **Construire l'application Android**:
+   ```bash
+   npm run android:build
+   ```
+
+5. **Télécharger sur Play Console**:
+   - Créer une application dans [Google Play Console](https://play.google.com/console)
+   - Télécharger le fichier `app-release-bundle.aab`
+   - Compléter les informations de la fiche Play Store
+   - Soumettre pour révision
+
+### Build automatisé avec GitHub Actions
+
+Un workflow GitHub Actions (`.github/workflows/build-android.yml`) peut automatiser la construction de l'application Android. Configurez les secrets suivants dans votre repository :
+
+- `KEYSTORE_BASE64` : Votre keystore encodé en base64
+- `KEYSTORE_PASSWORD` : Mot de passe du keystore
+- `KEY_PASSWORD` : Mot de passe de l'alias
+
 Joyeuses fêtes ! 🎄🎁

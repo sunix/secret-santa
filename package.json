@@ -1,0 +1,19 @@
+{
+  "name": "secret-santa",
+  "version": "1.0.0",
+  "description": "Une application web progressive (PWA) pour organiser un Secret Santa avec vos amis !",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "android:init": "bubblewrap init --manifest=https://sunix.github.io/secret-santa/manifest.json",
+    "android:build": "bubblewrap build",
+    "android:install": "bubblewrap install",
+    "android:update": "bubblewrap update"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@bubblewrap/cli": "^1.24.1"
+  }
+}
