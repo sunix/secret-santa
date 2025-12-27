@@ -72,7 +72,11 @@ class SecretSantaApp {
         this.drawResults = [];
         this.currentDrawIndex = 0;
         this.currentLanguage = localStorage.getItem('secretSantaLang') || 'fr';
-        this.SUSPENSE_ANIMATION_DURATION = 2000; // milliseconds
+        this.COUNTDOWN_DURATION = 5000; // 5 seconds countdown
+        this.RESULT_DISPLAY_DURATION = 5000; // 5 seconds to show result
+        this.CONFETTI_PARTICLE_COUNT = 150;
+        this.CONFETTI_COLORS = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff', '#ffa500', '#ff1493'];
+        this.confettiAnimation = null;
         this.init();
     }
 
@@ -222,8 +226,8 @@ class SecretSantaApp {
         document.getElementById('draw-section').style.display = 'block';
         document.getElementById('results-section').style.display = 'none';
 
-        // Show first draw
-        this.updateDrawDisplay();
+        // Show first draw with fullscreen animation
+        this.showFullscreenReveal();
     }
 
     performCompleteDraw() {
@@ -278,7 +282,145 @@ class SecretSantaApp {
         if (this.currentDrawIndex >= this.drawResults.length) {
             this.showResults();
         } else {
-            this.updateDrawDisplay(true);
+            this.showFullscreenReveal();
+        }
+    }
+
+    showFullscreenReveal() {
+        const draw = this.drawResults[this.currentDrawIndex];
+        const overlay = document.getElementById('reveal-overlay');
+        const countdownEl = document.getElementById('countdown-timer');
+        const revealTextEl = document.getElementById('reveal-text');
+        const canvas = document.getElementById('confetti-canvas');
+        
+        // Show overlay
+        overlay.style.display = 'flex';
+        
+        // Disable buttons during animation
+        const nextBtn = document.getElementById('next-draw');
+        const restartBtn = document.getElementById('restart-draw');
+        if (nextBtn) nextBtn.disabled = true;
+        if (restartBtn) restartBtn.disabled = true;
+        
+        // Start countdown
+        let countdown = this.COUNTDOWN_DURATION / 1000;
+        countdownEl.textContent = countdown;
+        revealTextEl.textContent = '';
+        
+        const countdownInterval = setInterval(() => {
+            countdown--;
+            if (countdown > 0) {
+                countdownEl.textContent = countdown;
+            } else {
+                clearInterval(countdownInterval);
+                
+                // Hide countdown and show reveal
+                countdownEl.style.display = 'none';
+                revealTextEl.innerHTML = `
+                    <div style="margin-bottom: 20px; font-size: 2.5rem;">🎁</div>
+                    <div><strong>${draw.giver}</strong></div>
+                    <div style="margin: 20px 0; font-size: 2rem;">↓</div>
+                    <div>${this.t('givesTo')}</div>
+                    <div style="margin-top: 20px; font-size: 3.5rem;"><strong>${draw.receiver}</strong></div>
+                `;
+                
+                // Start confetti animation
+                this.startConfetti(canvas);
+                
+                // Hide overlay after result display duration
+                setTimeout(() => {
+                    this.stopConfetti();
+                    overlay.style.display = 'none';
+                    countdownEl.style.display = 'block';
+                    
+                    // Update the main draw display
+                    this.updateDrawDisplay(false);
+                    
+                    // Re-enable buttons
+                    if (nextBtn) nextBtn.disabled = false;
+                    if (restartBtn) restartBtn.disabled = false;
+                }, this.RESULT_DISPLAY_DURATION);
+            }
+        }, 1000);
+    }
+
+    startConfetti(canvas) {
+        const ctx = canvas.getContext('2d');
+        
+        // Stop any existing animation
+        this.stopConfetti();
+        
+        // Resize canvas only if dimensions don't match
+        if (canvas.width !== window.innerWidth || canvas.height !== window.innerHeight) {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        
+        const particles = [];
+        
+        // Create particles
+        for (let i = 0; i < this.CONFETTI_PARTICLE_COUNT; i++) {
+            particles.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height - canvas.height,
+                size: Math.random() * 8 + 4,
+                speedY: Math.random() * 3 + 2,
+                speedX: Math.random() * 2 - 1,
+                color: this.CONFETTI_COLORS[Math.floor(Math.random() * this.CONFETTI_COLORS.length)],
+                rotation: Math.random() * 360,
+                rotationSpeed: Math.random() * 5 - 2.5
+            });
+        }
+        
+        // Animation function
+        const animate = () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            particles.forEach((p, index) => {
+                ctx.save();
+                ctx.translate(p.x, p.y);
+                ctx.rotate(p.rotation * Math.PI / 180);
+                ctx.fillStyle = p.color;
+                ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+                ctx.restore();
+                
+                p.y += p.speedY;
+                p.x += p.speedX;
+                p.rotation += p.rotationSpeed;
+                
+                // Reset particle if it goes off screen
+                if (p.y > canvas.height) {
+                    p.y = -10;
+                    p.x = Math.random() * canvas.width;
+                }
+                
+                // Reset particle if it goes too far horizontally
+                if (p.x < -10 || p.x > canvas.width + 10) {
+                    p.x = Math.random() * canvas.width;
+                    p.y = -10;
+                }
+            });
+            
+            // Continue animation only if not stopped
+            if (this.confettiAnimation !== null) {
+                this.confettiAnimation = requestAnimationFrame(animate);
+            }
+        };
+        
+        this.confettiAnimation = requestAnimationFrame(animate);
+    }
+
+    stopConfetti() {
+        if (this.confettiAnimation) {
+            cancelAnimationFrame(this.confettiAnimation);
+            this.confettiAnimation = null;
+        }
+        
+        // Clear canvas
+        const canvas = document.getElementById('confetti-canvas');
+        if (canvas) {
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
         }
     }
 
@@ -293,10 +435,7 @@ class SecretSantaApp {
             const isCurrent = i === this.currentDrawIndex;
             stepDiv.className = 'draw-step' + (isCurrent ? ' current' : '');
             
-            // For the current draw with animation, show suspense first
-            const receiverContent = (isCurrent && withAnimation) 
-                ? '<span class="receiver revealing">???</span>'
-                : `<span class="receiver">${draw.receiver}</span>`;
+            const receiverContent = `<span class="receiver">${draw.receiver}</span>`;
             
             if (i === 0) {
                 stepDiv.innerHTML = `
@@ -311,35 +450,6 @@ class SecretSantaApp {
             }
             
             drawInfo.appendChild(stepDiv);
-            
-            // If this is the current draw with animation, reveal after delay
-            if (isCurrent && withAnimation) {
-                const receiverSpan = stepDiv.querySelector('.receiver');
-                const drawIndexSnapshot = this.currentDrawIndex;
-                const drawSection = document.getElementById('draw-section');
-                // Disable the button during animation
-                const nextBtn = document.getElementById('next-draw');
-                nextBtn.disabled = true;
-                
-                // After suspense, reveal the name
-                setTimeout(() => {
-                    // Always re-enable the button after timeout
-                    const currentBtn = document.getElementById('next-draw');
-                    if (currentBtn) {
-                        currentBtn.disabled = false;
-                    }
-                    
-                    // Verify the state hasn't changed and the element still exists before revealing
-                    if (receiverSpan && 
-                        receiverSpan.parentNode && 
-                        drawIndexSnapshot === this.currentDrawIndex &&
-                        drawSection && drawSection.style.display !== 'none') {
-                        receiverSpan.classList.remove('revealing');
-                        receiverSpan.classList.add('revealed');
-                        receiverSpan.textContent = draw.receiver;
-                    }
-                }, this.SUSPENSE_ANIMATION_DURATION);
-            }
         }
 
         // Update button text
