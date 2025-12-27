@@ -66,9 +66,18 @@ Pour déployer les modifications :
 
 L'application peut être publiée sur le Google Play Store en tant qu'application Android native grâce à la technologie Trusted Web Activity (TWA).
 
-### Guide complet
+### 🚀 Démarrage rapide
 
-Consultez le **[Guide de publication Google Play Store](GOOGLE_PLAY_GUIDE.md)** pour les instructions détaillées.
+**➡️ Commencez ici : [GETTING_STARTED.md](GETTING_STARTED.md)**
+
+Ce guide vous accompagne pas à pas pour publier l'application sur Google Play Store.
+
+### 📚 Documentation complète
+
+- **[GETTING_STARTED.md](GETTING_STARTED.md)** - Guide de démarrage pour débutants
+- **[QUICKSTART_PLAY_STORE.md](QUICKSTART_PLAY_STORE.md)** - Référence rapide
+- **[GOOGLE_PLAY_GUIDE.md](GOOGLE_PLAY_GUIDE.md)** - Guide détaillé complet
+- **[DOCS_INDEX.md](DOCS_INDEX.md)** - Index de toute la documentation
 
 ### Résumé rapide
 
