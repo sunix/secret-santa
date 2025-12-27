@@ -403,6 +403,7 @@ footer {
 }
 
 /* Fullscreen Reveal Overlay */
+/* High z-index (10000+) is needed to appear above the preview banner (z-index: 9999) */
 .reveal-overlay {
     position: fixed;
     top: 0;

@@ -74,6 +74,8 @@ class SecretSantaApp {
         this.currentLanguage = localStorage.getItem('secretSantaLang') || 'fr';
         this.COUNTDOWN_DURATION = 5000; // 5 seconds countdown
         this.RESULT_DISPLAY_DURATION = 5000; // 5 seconds to show result
+        this.CONFETTI_PARTICLE_COUNT = 150;
+        this.CONFETTI_COLORS = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff', '#ffa500', '#ff1493'];
         this.init();
     }
 
@@ -300,7 +302,7 @@ class SecretSantaApp {
         if (restartBtn) restartBtn.disabled = true;
         
         // Start countdown
-        let countdown = 5;
+        let countdown = this.COUNTDOWN_DURATION / 1000;
         countdownEl.textContent = countdown;
         revealTextEl.textContent = '';
         
@@ -347,17 +349,16 @@ class SecretSantaApp {
         canvas.height = window.innerHeight;
         
         const particles = [];
-        const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff', '#ffa500', '#ff1493'];
         
         // Create particles
-        for (let i = 0; i < 150; i++) {
+        for (let i = 0; i < this.CONFETTI_PARTICLE_COUNT; i++) {
             particles.push({
                 x: Math.random() * canvas.width,
                 y: Math.random() * canvas.height - canvas.height,
                 size: Math.random() * 8 + 4,
                 speedY: Math.random() * 3 + 2,
                 speedX: Math.random() * 2 - 1,
-                color: colors[Math.floor(Math.random() * colors.length)],
+                color: this.CONFETTI_COLORS[Math.floor(Math.random() * this.CONFETTI_COLORS.length)],
                 rotation: Math.random() * 360,
                 rotationSpeed: Math.random() * 5 - 2.5
             });
