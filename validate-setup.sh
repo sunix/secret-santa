@@ -140,11 +140,14 @@ if [ -f "android.keystore" ]; then
     echo -e "${GREEN}✓${NC} android.keystore exists"
     echo "   ${YELLOW}Note: Ensure this file is backed up securely!${NC}"
     
-    # Try to verify keystore
-    if keytool -list -v -keystore android.keystore -alias android &> /dev/null; then
+    # Try to verify keystore (without prompting for password)
+    # Note: This may prompt for password if keystore is protected
+    # Output is redirected to prevent password exposure in logs
+    if keytool -list -v -keystore android.keystore -alias android 2>/dev/null | grep -q "Valid from"; then
         echo -e "${GREEN}✓${NC} Keystore is valid and accessible"
     else
-        echo -e "${YELLOW}⚠${NC} Could not verify keystore (might need password)"
+        echo -e "${YELLOW}⚠${NC} Could not verify keystore (password-protected or invalid)"
+        echo "   This is normal if your keystore requires a password"
     fi
 else
     echo -e "${YELLOW}⚠${NC} android.keystore not found"
@@ -157,10 +160,11 @@ echo ""
 # 9. Check assetlinks.json configuration
 echo "9️⃣  Checking Digital Asset Links configuration..."
 if [ -f ".well-known/assetlinks.json" ]; then
-    if grep -q "REPLACE_WITH_YOUR_APP_SIGNING_FINGERPRINT" ".well-known/assetlinks.json"; then
+    if grep -q "REPLACE_WITH_YOUR" ".well-known/assetlinks.json"; then
         echo -e "${YELLOW}⚠${NC} assetlinks.json contains placeholder fingerprint"
         echo "   Update with your actual SHA-256 fingerprint from:"
         echo "   keytool -list -v -keystore android.keystore -alias android"
+        echo "   Format: Remove colons from SHA-256 (e.g., AB:CD:EF... becomes ABCDEF...)"
         ((WARNINGS++))
     else
         echo -e "${GREEN}✓${NC} assetlinks.json appears to be configured"

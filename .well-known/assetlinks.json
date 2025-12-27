@@ -5,7 +5,7 @@
       "namespace": "android_app",
       "package_name": "io.github.sunix.secretsanta",
       "sha256_cert_fingerprints": [
-        "REPLACE_WITH_YOUR_APP_SIGNING_FINGERPRINT"
+        "REPLACE_WITH_YOUR_SHA256_FINGERPRINT_WITHOUT_COLONS"
       ]
     }
   }
