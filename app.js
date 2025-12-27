@@ -226,8 +226,8 @@ class SecretSantaApp {
         document.getElementById('draw-section').style.display = 'block';
         document.getElementById('results-section').style.display = 'none';
 
-        // Show first draw
-        this.updateDrawDisplay();
+        // Show first draw with fullscreen animation
+        this.showFullscreenReveal();
     }
 
     performCompleteDraw() {
