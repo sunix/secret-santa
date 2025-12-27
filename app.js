@@ -347,6 +347,9 @@ class SecretSantaApp {
     startConfetti(canvas) {
         const ctx = canvas.getContext('2d');
         
+        // Stop any existing animation
+        this.stopConfetti();
+        
         // Resize canvas only if dimensions don't match
         if (canvas.width !== window.innerWidth || canvas.height !== window.innerHeight) {
             canvas.width = window.innerWidth;
@@ -390,9 +393,16 @@ class SecretSantaApp {
                     p.y = -10;
                     p.x = Math.random() * canvas.width;
                 }
+                
+                // Reset particle if it goes too far horizontally
+                if (p.x < -10 || p.x > canvas.width + 10) {
+                    p.x = Math.random() * canvas.width;
+                    p.y = -10;
+                }
             });
             
-            if (this.confettiAnimation) {
+            // Continue animation only if not stopped
+            if (this.confettiAnimation !== null) {
                 this.confettiAnimation = requestAnimationFrame(animate);
             }
         };
