@@ -19,6 +19,10 @@ jobs:
   build-android:
     runs-on: ubuntu-latest
     
+    permissions:
+      contents: write  # Required for creating releases and uploading artifacts
+      actions: read
+    
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
