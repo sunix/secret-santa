@@ -76,6 +76,7 @@ class SecretSantaApp {
         this.RESULT_DISPLAY_DURATION = 5000; // 5 seconds to show result
         this.CONFETTI_PARTICLE_COUNT = 150;
         this.CONFETTI_COLORS = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff', '#ffa500', '#ff1493'];
+        this.confettiAnimation = null;
         this.init();
     }
 
@@ -345,8 +346,12 @@ class SecretSantaApp {
 
     startConfetti(canvas) {
         const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+        
+        // Resize canvas only if dimensions don't match
+        if (canvas.width !== window.innerWidth || canvas.height !== window.innerHeight) {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
         
         const particles = [];
         
